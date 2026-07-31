@@ -3,7 +3,8 @@
 <title>GNI Solution — 경력증명서 진위확인</title><style>
 :root{--coral:#D97757;--coral-d:#C2653F;--dark:#1E2630;--meta:#44546A;--line:#BFC5CE;--bg:#F6F7F9;--tint:#FAEDE6}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.35}
+body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.35;
+  word-break:keep-all;overflow-wrap:break-word}   /* 한글은 어절 단위 줄바꿈, 긴 영문·숫자만 강제 분리 */
 .hd{background:#fff;border-bottom:1px solid var(--line);padding:13px 24px;font-weight:700;font-size:15px;
   display:flex;align-items:center;gap:14px}
 .hd img{height:40px;width:auto;display:block;flex:none}
@@ -30,14 +31,13 @@ button:active{background:var(--coral-d)}
 .bad .en{color:var(--meta);letter-spacing:2px}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th{background:var(--dark);color:#fff;padding:8px 10px;text-align:left;font-weight:700;width:130px}
-td{border:1px solid var(--line);padding:8px 10px;word-break:break-word}
+td{border:1px solid var(--line);padding:8px 10px}
 .nt{font-size:11px;color:var(--meta);line-height:1.6;padding:14px 20px;background:#fff;border:1px solid var(--line)}
 .nt b{color:var(--coral-d)}
 .nt p{margin:0}
 .nt p+p{margin-top:5px}
 /* 헤더 부제 — 한글구/영문구를 각각 통째로 줄바꿈 (단어 중간에서 끊기지 않게) */
 .hd .nb{display:inline-block;white-space:nowrap}
-.hd small{word-break:keep-all}
 .ft{font-size:10.5px;color:var(--meta);margin-top:18px;text-align:center;line-height:1.6}
 /* ── 모바일 (QR은 대부분 폰으로 스캔) ── */
 @media(max-width:560px){
