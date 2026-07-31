@@ -13,11 +13,19 @@ a.card:hover,a.card:active{border-color:#D97757;background:#FAEDE6}
 a.card b{display:block;font-size:14px;margin-bottom:4px}
 a.card span{font-size:11.5px;color:#44546A}
 .ft{font-size:10.5px;color:#44546A;text-align:center;margin-top:20px}
+.lang{margin-left:auto;flex:none;display:flex;border:1px solid #BFC5CE;overflow:hidden}
+.lang button{height:28px;padding:0 12px;background:#fff;color:#44546A;border:none;
+  font-size:11.5px;font-weight:700;letter-spacing:.5px;cursor:pointer;font-family:inherit;
+  touch-action:manipulation}
+.lang button+button{border-left:1px solid #BFC5CE}
+.lang button.on{background:#D97757;color:#fff}
+.lang button:hover:not(.on){background:#FAEDE6;color:#C2653F}
 /* ── 모바일 (QR은 대부분 폰으로 스캔) ── */
 @media(max-width:560px){
   .hd{padding:11px 14px;gap:10px;font-size:13.5px}
   .hd img{height:34px}
   .hd small{font-size:10.5px;margin-top:2px}
+  .lang button{height:26px;padding:0 9px;font-size:11px}
   .w{padding:16px 12px}
   a.card{padding:16px 16px;margin-bottom:10px}
   a.card b{font-size:14.5px}
@@ -25,9 +33,47 @@ a.card span{font-size:11.5px;color:#44546A}
 }
 </style></head><body>
 <div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
-  <div>GNI Solution Co., Ltd.<small>QA 증명서 진위확인 · Certificate Verification Portal</small></div></div>
+  <div>GNI Solution Co., Ltd.<small id="hdSub"></small></div>
+  <div class="lang">
+    <button id="bKR" onclick="setLang('kr')">KR</button>
+    <button id="bEN" onclick="setLang('en')">EN</button>
+  </div></div>
 <div class="w">
-  <a class="card" href="career_verify.html"><b>경력증명서 진위확인</b>
-    <span>Career / Serve / Retirement Certificate — Form GA-3</span></a>
-  <div class="ft">GNI Solution Co., Ltd. · 품질보증부</div>
-</div></body></html>
+  <a class="card" href="career_verify.html"><b id="c1t"></b><span id="c1s"></span></a>
+  <div class="ft" id="foot"></div>
+</div>
+<script>
+var STR={
+ kr:{lang:'ko', title:'GNI Solution — QA 증명서 진위확인',
+     hdSub:'QA 증명서 진위확인 · Certificate Verification Portal',
+     c1t:'경력증명서 진위확인',
+     c1s:'Career / Employment / Retirement Certificate — Form GA-3',
+     foot:'GNI Solution Co., Ltd. · 품질보증부'},
+ en:{lang:'en', title:'GNI Solution — Certificate Verification Portal',
+     hdSub:'Certificate Verification Portal — QA Department',
+     c1t:'Career Certificate Verification',
+     c1s:'Career / Employment / Retirement Certificate — Form GA-3',
+     foot:'GNI Solution Co., Ltd. · QA Department'}
+};
+var LSKEY='gni_verify_lang';
+function setLang(L){
+  L=(L==='en')?'en':'kr';
+  try{ localStorage.setItem(LSKEY,L); }catch(e){}
+  var s=STR[L];
+  document.documentElement.lang=s.lang;
+  document.title=s.title;
+  document.getElementById('hdSub').textContent=s.hdSub;
+  document.getElementById('c1t').textContent=s.c1t;
+  document.getElementById('c1s').textContent=s.c1s;
+  document.getElementById('foot').textContent=s.foot;
+  document.getElementById('bKR').className=(L==='kr')?'on':'';
+  document.getElementById('bEN').className=(L==='en')?'on':'';
+}
+(function(){
+  var L=null;
+  try{ L=localStorage.getItem(LSKEY); }catch(e){}
+  if(!L){ var p=new URLSearchParams(location.search).get('lang'); if(p) L=p.toLowerCase(); }
+  if(!L) L=((navigator.language||'').toLowerCase().indexOf('ko')===0)?'kr':'en';
+  setLang(L);
+})();
+</script></body></html>

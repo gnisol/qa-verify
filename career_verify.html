@@ -9,6 +9,14 @@ body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var
   display:flex;align-items:center;gap:14px}
 .hd img{height:40px;width:auto;display:block;flex:none}
 .hd small{display:block;font-size:11px;color:var(--meta);font-weight:400;margin-top:3px}
+/* 언어 토글 — 우측 최상단 */
+.lang{margin-left:auto;flex:none;display:flex;border:1px solid var(--line);overflow:hidden}
+.lang button{height:28px;padding:0 12px;background:#fff;color:var(--meta);border:none;
+  font-size:11.5px;font-weight:700;letter-spacing:.5px;cursor:pointer;font-family:inherit;
+  touch-action:manipulation}
+.lang button+button{border-left:1px solid var(--line)}
+.lang button.on{background:var(--coral);color:#fff}
+.lang button:hover:not(.on){background:var(--tint);color:var(--coral-d)}
 .wrap{max-width:640px;margin:0 auto;padding:24px 16px 60px}
 .sec{background:var(--coral);color:#fff;font-size:12px;font-weight:700;padding:8px 14px}
 .card{background:#fff;border:1px solid var(--line);margin-bottom:16px}
@@ -46,6 +54,7 @@ td{border:1px solid var(--line);padding:8px 10px}
   .hd small{font-size:10px;margin-top:3px;line-height:1.5}
   .hd .dot{display:none}                    /* 좁은 화면에서는 가운뎃점 대신 줄바꿈 */
   .hd .nb{display:block;white-space:normal}  /* 한글구·영문구 각각 한 줄 */
+  .lang button{height:26px;padding:0 9px;font-size:11px}
   .wrap{padding:14px 12px 40px}
   .cb{padding:14px 14px}
   .row{grid-template-columns:1fr;gap:10px}
@@ -65,24 +74,23 @@ td{border:1px solid var(--line);padding:8px 10px}
 </style></head><body>
 <div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
   <div>GNI Solution Co., Ltd.
-  <small><span class="nb">경력증명서 진위확인</span> <span class="dot">·</span>
-  <span class="nb">Career Certificate Verification — QA Department</span></small></div></div>
+  <small><span class="nb" id="hdSub"></span></small></div>
+  <div class="lang">
+    <button id="bKR" onclick="setLang('kr')">KR</button>
+    <button id="bEN" onclick="setLang('en')">EN</button>
+  </div></div>
 <div class="wrap">
- <div class="card"><div class="sec">발급번호 조회 · Certificate No.</div><div class="cb">
+ <div class="card"><div class="sec" id="secTitle"></div><div class="cb">
   <div class="row">
-    <input id="q"  placeholder="발급번호 예: 2026-0015">
-    <input id="tk" placeholder="조회코드 (증명서 QR 하단)">
-    <button onclick="go()">조회</button>
+    <input id="q"  placeholder="">
+    <input id="tk" placeholder="">
+    <button id="btnGo" onclick="go()"></button>
   </div>
-  <div id="src" style="font-size:11px;color:var(--meta);margin-top:9px">DB 확인 중...</div>
+  <div id="src" style="font-size:11px;color:var(--meta);margin-top:9px"></div>
  </div></div>
  <div id="out"></div>
- <div class="nt">
-  <p>· 본 페이지는 지엔아이솔루션㈜ 품질보증부가 발급한 <b>경력증명서의 발급 사실</b>을 확인합니다.</p>
-  <p>· 개인정보 보호를 위해 <b>성명은 일부 마스킹</b>되며, 경력 상세·제출처는 공개하지 않습니다.</p>
-  <p>· 증명서 원본 대조가 필요한 경우 품질보증부로 문의하십시오.</p>
- </div>
- <div class="ft">GNI Solution Co., Ltd. · 품질보증부<br>Form GA-3 Career Certificate Verification</div>
+ <div class="nt" id="notes"></div>
+ <div class="ft" id="foot"></div>
 </div>
 <script>
 // 순수 JS SHA-256 (file:// 에서도 동작 — crypto.subtle 의존 없음)
@@ -121,44 +129,127 @@ function sha256hex(msg){
   }
   return H.map(x=>('00000000'+(x>>>0).toString(16)).slice(-8)).join('');
 }
-var DB={};
+/* ════════ 문구 — KR / EN ════════ */
+var STR={
+ kr:{ htmlLang:'ko', title:'GNI Solution — 경력증명서 진위확인',
+   hdSub:'경력증명서 진위확인 · Career Certificate Verification',
+   secTitle:'발급번호 조회 · Certificate No.',
+   phNo:'발급번호 예: 2026-0711', phCode:'조회코드 (증명서 QR 하단 8자리)', btn:'조회',
+   loading:'DB 확인 중...',
+   loaded:function(n){return '발급기록 '+n+'건 로드됨';},
+   loadFail:'발급기록 DB를 불러오지 못했습니다.',
+   okKo:'적법하게 발급된 경력증명서입니다',
+   okSb:function(t){return '지엔아이솔루션㈜ 품질보증부 발급기록과 일치합니다.<br>확인 시각 '+t;},
+   nfKo:'발급 기록을 찾을 수 없습니다',
+   nfSb:function(k){return '발급번호 '+k+' 에 해당하는 기록이 없습니다.<br>번호를 다시 확인하시거나 품질보증부로 문의하십시오.';},
+   cmKo:'조회코드가 일치하지 않습니다',
+   cmSb:'증명서 좌측 하단 QR 아래의 <b>Code</b> 8자리를 입력하십시오.',
+   recTitle:'발급 정보 · Issuance Record',
+   thNo:'발급번호', thDate:'발급일', thType:'증명서 유형', thName:'성명',
+   thTotal:'총 경력기간', thRows:'경력 기재건수', thIssued:'발급 기록시각',
+   maskNote:'(개인정보 보호를 위해 일부 마스킹)',
+   unitDays:' Days', unitRows:function(n){return n+' 건';},
+   typeSuffix:' Certificate',
+   notes:['· 본 페이지는 지엔아이솔루션㈜ 품질보증부가 발급한 <b>경력증명서의 발급 사실</b>을 확인합니다.',
+          '· 개인정보 보호를 위해 <b>성명은 일부 마스킹</b>되며, 경력 상세·제출처는 공개하지 않습니다.',
+          '· 증명서 원본 대조가 필요한 경우 품질보증부로 문의하십시오.'],
+   foot:'GNI Solution Co., Ltd. · 품질보증부<br>Form GA-3 Career Certificate Verification' },
+ en:{ htmlLang:'en', title:'GNI Solution — Career Certificate Verification',
+   hdSub:'Career Certificate Verification — QA Department',
+   secTitle:'Certificate No. Lookup',
+   phNo:'Certificate No.  e.g. 2026-0711', phCode:'Code (8 characters, printed below the QR)', btn:'Verify',
+   loading:'Loading database...',
+   loaded:function(n){return n+' issuance record(s) loaded';},
+   loadFail:'Unable to load the issuance database.',
+   okKo:'This is a validly issued Career Certificate',
+   okSb:function(t){return 'It matches the issuance record of GNI Solution Co., Ltd. — QA Department.<br>Verified at '+t;},
+   nfKo:'No issuance record found',
+   nfSb:function(k){return 'No record matches certificate no. '+k+'.<br>Please check the number, or contact the QA Department.';},
+   cmKo:'The verification code does not match',
+   cmSb:'Enter the 8-character <b>Code</b> printed below the QR at the bottom left of the certificate.',
+   recTitle:'Issuance Record',
+   thNo:'Certificate No.', thDate:'Issue Date', thType:'Certificate Type', thName:'Name',
+   thTotal:'Total Period', thRows:'Career Entries', thIssued:'Recorded At',
+   maskNote:'(partially masked for privacy)',
+   unitDays:' Days', unitRows:function(n){return n+(Number(n)===1?' entry':' entries');},
+   typeSuffix:' Certificate',
+   notes:['· This page confirms <b>the fact of issuance</b> of a Career Certificate issued by the QA Department of GNI Solution Co., Ltd.',
+          '· <b>Names are partially masked</b> for privacy. Career details and the recipient are not disclosed.',
+          '· To verify against the original document, please contact the QA Department.'],
+   foot:'GNI Solution Co., Ltd. · QA Department<br>Form GA-3 Career Certificate Verification' }
+};
+var LANG='kr', LSKEY='gni_verify_lang';
+var DB={}, DBREADY=false, DBOK=false, SHOWN=false;
+function TT(){ return STR[LANG]; }
+function setLang(L){
+  LANG=(L==='en')?'en':'kr';
+  try{ localStorage.setItem(LSKEY,LANG); }catch(e){}
+  var s=TT();
+  document.documentElement.lang=s.htmlLang;
+  document.title=s.title;
+  document.getElementById('hdSub').textContent=s.hdSub;
+  document.getElementById('secTitle').textContent=s.secTitle;
+  document.getElementById('q').placeholder=s.phNo;
+  document.getElementById('tk').placeholder=s.phCode;
+  document.getElementById('btnGo').textContent=s.btn;
+  document.getElementById('notes').innerHTML=s.notes.map(function(x){return '<p>'+x+'</p>';}).join('');
+  document.getElementById('foot').innerHTML=s.foot;
+  document.getElementById('bKR').className=(LANG==='kr')?'on':'';
+  document.getElementById('bEN').className=(LANG==='en')?'on':'';
+  document.getElementById('src').textContent = DBREADY
+    ? (DBOK ? s.loaded(Object.keys(DB).length) : s.loadFail) : s.loading;
+  if(SHOWN) go();
+}
+function initLang(){
+  var L=null;
+  try{ L=localStorage.getItem(LSKEY); }catch(e){}
+  if(!L){ var p=new URLSearchParams(location.search).get('lang'); if(p) L=p.toLowerCase(); }
+  if(!L) L=((navigator.language||'').toLowerCase().indexOf('ko')===0)?'kr':'en';
+  setLang(L);
+}
+
 fetch('gni_career_db.json?_='+Date.now()).then(function(r){return r.ok?r.json():{};}).then(function(j){
-  DB=j||{};
-  document.getElementById('src').textContent='발급기록 '+Object.keys(DB).length+'건 로드됨';
+  DB=j||{}; DBREADY=true; DBOK=true;
+  document.getElementById('src').textContent=TT().loaded(Object.keys(DB).length);
   var p=new URLSearchParams(location.search), id=p.get('id'), t=p.get('t');
   if(id){ document.getElementById('q').value=id; if(t) document.getElementById('tk').value=t; go(); }
-}).catch(function(){ document.getElementById('src').textContent='발급기록 DB를 불러오지 못했습니다.'; });
+}).catch(function(){ DBREADY=true; DBOK=false;
+  document.getElementById('src').textContent=TT().loadFail; });
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
   return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 
 function go(){
+  var s=TT();
   var k=document.getElementById('q').value.trim();
   var t=document.getElementById('tk').value.trim().toUpperCase();
   var r=DB[k], o=document.getElementById('out');
+  SHOWN=true;
   if(!r){
     o.innerHTML='<div class="badge bad"><div class="ic">&#9888;</div><div class="en">NOT FOUND</div>'
-      +'<div class="ko">발급 기록을 찾을 수 없습니다</div>'
-      +'<div class="sb">발급번호 '+esc(k)+' 에 해당하는 기록이 없습니다.<br>'
-      +'번호를 다시 확인하시거나 품질보증부로 문의하십시오.</div></div>'; return;
+      +'<div class="ko">'+s.nfKo+'</div>'
+      +'<div class="sb">'+s.nfSb(esc(k))+'</div></div>'; return;
   }
   if(r.th && sha256hex(k+':'+t).slice(0,32)!==r.th){
     o.innerHTML='<div class="badge bad"><div class="ic">&#9888;</div><div class="en">CODE MISMATCH</div>'
-      +'<div class="ko">조회코드가 일치하지 않습니다</div>'
-      +'<div class="sb">증명서 좌측 하단 QR 아래의 <b>Code</b> 8자리를 입력하십시오.</div></div>'; return;
+      +'<div class="ko">'+s.cmKo+'</div>'
+      +'<div class="sb">'+s.cmSb+'</div></div>'; return;
   }
+  var now=new Date().toLocaleString(LANG==='kr'?'ko-KR':'en-GB');
   o.innerHTML='<div class="badge"><div class="ic">&#10004;</div><div class="en">VERIFIED</div>'
-   +'<div class="ko">적법하게 발급된 경력증명서입니다</div>'
-   +'<div class="sb">지엔아이솔루션㈜ 품질보증부 발급기록과 일치합니다.<br>'
-   +'확인 시각 '+new Date().toLocaleString('ko-KR')+'</div></div>'
-   +'<div class="card"><div class="sec">발급 정보 · Issuance Record</div><div class="cb"><table>'
-   +'<tr><th>발급번호</th><td>'+esc(r.no)+'</td></tr>'
-   +'<tr><th>발급일</th><td>'+esc(r.date)+'</td></tr>'
-   +'<tr><th>증명서 유형</th><td>'+esc(r.type)+' Certificate</td></tr>'
-   +'<tr><th>성명</th><td>'+esc(r.name)+' <span style="color:var(--meta);font-size:11px">(개인정보 보호를 위해 일부 마스킹)</span></td></tr>'
-   +'<tr><th>총 경력기간</th><td>'+(r.totalDays==null?'&mdash;':Number(r.totalDays).toLocaleString('en-US')+' Days')+'</td></tr>'
-   +'<tr><th>경력 기재건수</th><td>'+(r.rowCount==null?'&mdash;':r.rowCount+' 건')+'</td></tr>'
-   +'<tr><th>발급 기록시각</th><td>'+esc(r.issuedAt)+'</td></tr>'
+   +'<div class="ko">'+s.okKo+'</div>'
+   +'<div class="sb">'+s.okSb(now)+'</div></div>'
+   +'<div class="card"><div class="sec">'+s.recTitle+'</div><div class="cb"><table>'
+   +'<tr><th>'+s.thNo+'</th><td>'+esc(r.no)+'</td></tr>'
+   +'<tr><th>'+s.thDate+'</th><td>'+esc(r.date)+'</td></tr>'
+   +'<tr><th>'+s.thType+'</th><td>'+esc(r.type)+s.typeSuffix+'</td></tr>'
+   +'<tr><th>'+s.thName+'</th><td>'+esc(r.name)
+     +' <span style="color:var(--meta);font-size:11px">'+s.maskNote+'</span></td></tr>'
+   +'<tr><th>'+s.thTotal+'</th><td>'
+     +(r.totalDays==null?'&mdash;':Number(r.totalDays).toLocaleString('en-US')+s.unitDays)+'</td></tr>'
+   +'<tr><th>'+s.thRows+'</th><td>'+(r.rowCount==null?'&mdash;':s.unitRows(r.rowCount))+'</td></tr>'
+   +'<tr><th>'+s.thIssued+'</th><td>'+esc(r.issuedAt)+'</td></tr>'
    +'</table></div></div>';
 }
+initLang();
 </script></body></html>
