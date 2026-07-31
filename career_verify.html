@@ -4,7 +4,9 @@
 :root{--coral:#D97757;--coral-d:#C2653F;--dark:#1E2630;--meta:#44546A;--line:#BFC5CE;--bg:#F6F7F9;--tint:#FAEDE6}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.35}
-.hd{background:#fff;border-bottom:1px solid var(--line);padding:16px 24px;font-weight:700;font-size:15px}
+.hd{background:#fff;border-bottom:1px solid var(--line);padding:13px 24px;font-weight:700;font-size:15px;
+  display:flex;align-items:center;gap:14px}
+.hd img{height:34px;width:auto;display:block;flex:none}
 .hd small{display:block;font-size:11px;color:var(--meta);font-weight:400;margin-top:3px}
 .wrap{max-width:640px;margin:0 auto;padding:24px 16px 60px}
 .sec{background:var(--coral);color:#fff;font-size:12px;font-weight:700;padding:7px 14px}
@@ -28,8 +30,9 @@ td{border:1px solid var(--line);padding:7px 10px}
 .nt b{color:var(--coral-d)}
 .ft{font-size:10.5px;color:var(--meta);margin-top:18px;text-align:center;line-height:1.6}
 </style></head><body>
-<div class="hd">GNI Solution Co., Ltd.
-  <small>경력증명서 진위확인 · Career Certificate Verification — QA Department</small></div>
+<div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
+  <div>GNI Solution Co., Ltd.
+  <small>경력증명서 진위확인 · Career Certificate Verification — QA Department</small></div></div>
 <div class="wrap">
  <div class="card"><div class="sec">발급번호 조회 · Certificate No.</div><div class="cb">
   <div class="row">
