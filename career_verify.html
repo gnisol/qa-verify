@@ -50,6 +50,10 @@ button:active{background:var(--coral-d)}
 .err .ic{color:var(--ng-d)}
 .err .en{color:var(--ng-d);letter-spacing:2px}
 .err .ko{color:var(--ng-d)}
+/* 해시 검증 중 — 판정 전 임시 표시 */
+.wait{border-color:var(--line);background:#fff}
+.wait .ic{color:var(--meta);font-size:32px}
+.wait .en{color:var(--meta);font-size:17px;letter-spacing:2px}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th{background:var(--dark);color:#fff;padding:8px 10px;text-align:left;font-weight:700;width:130px}
 td{border:1px solid var(--line);padding:8px 10px}
@@ -148,7 +152,7 @@ var STR={
    hdSub:'경력증명서 진위확인 · Career Certificate Verification',
    secTitle:'발급번호 조회 · Certificate No.',
    phNo:'발급번호 예: 2026-0711', phCode:'조회코드 (증명서 QR 하단 8자리)', btn:'조회',
-   loading:'DB 확인 중...',
+   loading:'DB 확인 중...', checking:'확인 중...',
    loaded:function(n){return '발급기록 '+n+'건 로드됨';},
    loadFail:'발급기록 DB를 불러오지 못했습니다.',
    okKo:'적법하게 발급된 경력증명서입니다',
@@ -171,7 +175,7 @@ var STR={
    hdSub:'Career Certificate Verification — QA Department',
    secTitle:'Certificate No. Lookup',
    phNo:'Certificate No.  e.g. 2026-0711', phCode:'Code (8 characters, printed below the QR)', btn:'Verify',
-   loading:'Loading database...',
+   loading:'Loading database...', checking:'VERIFYING...',
    loaded:function(n){return n+' issuance record(s) loaded';},
    loadFail:'Unable to load the issuance database.',
    okKo:'This is a validly issued Career Certificate',
@@ -233,6 +237,14 @@ fetch('gni_career_db.json?_='+Date.now()).then(function(r){return r.ok?r.json():
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
   return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 
+/* 조회코드 해시 (v2) — 생성기와 동일한 5만 회 반복.
+   무차별 대입 비용을 5만 배로 올리기 위한 것이므로 횟수를 임의로 바꾸면 안 된다. */
+var HASH_ROUNDS=50000;
+function tokenHash(no,tok){
+  var h=sha256hex(String(no)+':'+String(tok).toUpperCase());
+  for(var i=0;i<HASH_ROUNDS;i++) h=sha256hex(h);
+  return h.slice(0,32);
+}
 function go(){
   var s=TT();
   var k=document.getElementById('q').value.trim();
@@ -244,7 +256,16 @@ function go(){
       +'<div class="ko">'+s.nfKo+'</div>'
       +'<div class="sb">'+s.nfSb(esc(k))+'</div></div>'; return;
   }
-  if(r.th && sha256hex(k+':'+t).slice(0,32)!==r.th){
+  /* 해시 반복에 0.3~1.3초가 걸린다. 멈춘 것처럼 보이지 않게 먼저 안내를 띄우고
+     다음 프레임에서 계산한다. */
+  o.innerHTML='<div class="badge wait"><div class="ic">&#8987;</div>'
+    +'<div class="en">'+s.checking+'</div></div>';
+  document.getElementById('btnGo').disabled=true;
+  setTimeout(function(){ finish(s,k,t,r,o); },30);
+}
+function finish(s,k,t,r,o){
+  document.getElementById('btnGo').disabled=false;
+  if(r.th && tokenHash(k,t)!==r.th){
     o.innerHTML='<div class="badge err"><div class="ic">&#9888;</div><div class="en">CODE MISMATCH</div>'
       +'<div class="ko">'+s.cmKo+'</div>'
       +'<div class="sb">'+s.cmSb+'</div></div>'; return;
