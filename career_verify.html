@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GNI Solution — 경력증명서 진위확인</title><style>
-:root{--coral:#D97757;--coral-d:#C2653F;--dark:#1E2630;--meta:#44546A;--line:#BFC5CE;--bg:#F6F7F9;--tint:#FAEDE6}
+:root{--coral:#D97757;--coral-d:#C2653F;--dark:#1E2630;--meta:#44546A;--line:#BFC5CE;--bg:#F6F7F9;--tint:#FAEDE6;
+  --ok:#1D9E75;--ok-d:#0F6E56;--ok-bg:#E1F5EE;--ok-t:#04342C;
+  --ng:#E24B4A;--ng-d:#A32D2D;--ng-bg:#FCEBEB}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var(--dark);line-height:1.35;
   word-break:keep-all;overflow-wrap:break-word}   /* 한글은 어절 단위 줄바꿈, 긴 영문·숫자만 강제 분리 */
@@ -30,13 +32,24 @@ button{height:44px;padding:0 22px;background:var(--coral);color:#fff;border:none
   touch-action:manipulation}
 button:hover{background:var(--coral-d)}
 button:active{background:var(--coral-d)}
-.badge{text-align:center;padding:24px 18px;border:2px solid var(--coral);background:var(--tint);margin-bottom:16px}
-.badge .ic{font-size:40px;line-height:1}
-.badge .en{font-size:26px;font-weight:800;letter-spacing:3px;color:var(--coral-d);margin-top:8px}
-.badge .ko{font-size:14px;font-weight:700;color:var(--dark);margin-top:8px}
+/* VERIFIED — 진한 초록. 인쇄·저조도에서도 판독되도록 대비 확보 */
+.badge{text-align:center;padding:24px 18px;border:2px solid var(--ok);background:var(--ok-bg);margin-bottom:16px}
+.badge .ic{font-size:40px;line-height:1;color:var(--ok-d)}
+.badge .en{font-size:26px;font-weight:800;letter-spacing:3px;color:var(--ok-d);margin-top:8px}
+/* 판정 문구는 한 줄 유지 — 좁은 화면에서는 글자 크기로 흡수한다 */
+.badge .ko{font-size:14px;font-weight:700;color:var(--ok-t);margin-top:8px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .badge .sb{font-size:11px;color:var(--meta);margin-top:8px;line-height:1.5}
+/* NOT FOUND — 회색. 오류가 아니라 '기록 없음' */
 .bad{border-color:var(--meta);background:var(--bg)}
+.bad .ic{color:var(--meta)}
 .bad .en{color:var(--meta);letter-spacing:2px}
+.bad .ko{color:var(--dark)}
+/* CODE MISMATCH — 붉은색 */
+.err{border-color:var(--ng);background:var(--ng-bg)}
+.err .ic{color:var(--ng-d)}
+.err .en{color:var(--ng-d);letter-spacing:2px}
+.err .ko{color:var(--ng-d)}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th{background:var(--dark);color:#fff;padding:8px 10px;text-align:left;font-weight:700;width:130px}
 td{border:1px solid var(--line);padding:8px 10px}
@@ -58,10 +71,10 @@ td{border:1px solid var(--line);padding:8px 10px}
   .wrap{padding:14px 12px 40px}
   .cb{padding:14px 14px}
   .row{grid-template-columns:1fr;gap:10px}
-  .badge{padding:20px 14px}
+  .badge{padding:20px 10px}
   .badge .ic{font-size:34px}
   .badge .en{font-size:21px;letter-spacing:2px}
-  .badge .ko{font-size:13px}
+  .badge .ko{font-size:12px}      /* 한 줄 유지를 위해 축소 */
   .badge .sb{font-size:10.5px}
   table{font-size:12px;display:block}
   tbody,tr{display:block;width:100%}
@@ -231,7 +244,7 @@ function go(){
       +'<div class="sb">'+s.nfSb(esc(k))+'</div></div>'; return;
   }
   if(r.th && sha256hex(k+':'+t).slice(0,32)!==r.th){
-    o.innerHTML='<div class="badge bad"><div class="ic">&#9888;</div><div class="en">CODE MISMATCH</div>'
+    o.innerHTML='<div class="badge err"><div class="ic">&#9888;</div><div class="en">CODE MISMATCH</div>'
       +'<div class="ko">'+s.cmKo+'</div>'
       +'<div class="sb">'+s.cmSb+'</div></div>'; return;
   }
