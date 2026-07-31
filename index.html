@@ -8,11 +8,21 @@ body{font-family:'Malgun Gothic',Arial,sans-serif;background:#F6F7F9;color:#1E26
 .hd small{display:block;font-size:11px;color:#44546A;font-weight:400;margin-top:3px}
 .w{max-width:620px;margin:0 auto;padding:28px 16px}
 a.card{display:block;background:#fff;border:1px solid #BFC5CE;padding:18px 20px;margin-bottom:12px;
-  text-decoration:none;color:#1E2630}
-a.card:hover{border-color:#D97757;background:#FAEDE6}
+  text-decoration:none;color:#1E2630;min-height:64px;-webkit-tap-highlight-color:transparent}
+a.card:hover,a.card:active{border-color:#D97757;background:#FAEDE6}
 a.card b{display:block;font-size:14px;margin-bottom:4px}
 a.card span{font-size:11.5px;color:#44546A}
 .ft{font-size:10.5px;color:#44546A;text-align:center;margin-top:20px}
+/* ── 모바일 (QR은 대부분 폰으로 스캔) ── */
+@media(max-width:560px){
+  .hd{padding:11px 14px;gap:10px;font-size:13.5px}
+  .hd img{height:34px}
+  .hd small{font-size:10.5px;margin-top:2px}
+  .w{padding:16px 12px}
+  a.card{padding:16px 16px;margin-bottom:10px}
+  a.card b{font-size:14.5px}
+  a.card span{font-size:11px;line-height:1.4;display:block}
+}
 </style></head><body>
 <div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
   <div>GNI Solution Co., Ltd.<small>QA 증명서 진위확인 · Certificate Verification Portal</small></div></div>

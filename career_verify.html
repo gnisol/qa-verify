@@ -9,13 +9,18 @@ body{font-family:'Malgun Gothic',Arial,sans-serif;background:var(--bg);color:var
 .hd img{height:40px;width:auto;display:block;flex:none}
 .hd small{display:block;font-size:11px;color:var(--meta);font-weight:400;margin-top:3px}
 .wrap{max-width:640px;margin:0 auto;padding:24px 16px 60px}
-.sec{background:var(--coral);color:#fff;font-size:12px;font-weight:700;padding:7px 14px}
+.sec{background:var(--coral);color:#fff;font-size:12px;font-weight:700;padding:8px 14px}
 .card{background:#fff;border:1px solid var(--line);margin-bottom:16px}
 .cb{padding:18px 20px}
 .row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
-input{height:38px;border:1px solid var(--line);padding:0 11px;font-size:13px;font-family:inherit;width:100%}
-button{height:38px;padding:0 20px;background:var(--coral);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:inherit}
+input{height:44px;border:1px solid var(--line);padding:0 12px;font-size:16px;font-family:inherit;width:100%;
+  border-radius:0;-webkit-appearance:none;appearance:none}
+input:focus{outline:2px solid var(--coral);outline-offset:-2px}
+button{height:44px;padding:0 22px;background:var(--coral);color:#fff;border:none;font-weight:700;
+  font-size:15px;cursor:pointer;font-family:inherit;border-radius:0;-webkit-appearance:none;appearance:none;
+  touch-action:manipulation}
 button:hover{background:var(--coral-d)}
+button:active{background:var(--coral-d)}
 .badge{text-align:center;padding:24px 18px;border:2px solid var(--coral);background:var(--tint);margin-bottom:16px}
 .badge .ic{font-size:40px;line-height:1}
 .badge .en{font-size:26px;font-weight:800;letter-spacing:3px;color:var(--coral-d);margin-top:8px}
@@ -24,11 +29,32 @@ button:hover{background:var(--coral-d)}
 .bad{border-color:var(--meta);background:var(--bg)}
 .bad .en{color:var(--meta);letter-spacing:2px}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
-th{background:var(--dark);color:#fff;padding:7px 10px;text-align:left;font-weight:700;width:130px}
-td{border:1px solid var(--line);padding:7px 10px}
+th{background:var(--dark);color:#fff;padding:8px 10px;text-align:left;font-weight:700;width:130px}
+td{border:1px solid var(--line);padding:8px 10px;word-break:break-word}
 .nt{font-size:11px;color:var(--meta);line-height:1.6;padding:14px 20px;background:#fff;border:1px solid var(--line)}
 .nt b{color:var(--coral-d)}
 .ft{font-size:10.5px;color:var(--meta);margin-top:18px;text-align:center;line-height:1.6}
+/* ── 모바일 (QR은 대부분 폰으로 스캔) ── */
+@media(max-width:560px){
+  .hd{padding:11px 14px;gap:10px;font-size:13.5px}
+  .hd img{height:34px}
+  .hd small{font-size:10.5px;margin-top:2px}
+  .wrap{padding:14px 12px 40px}
+  .cb{padding:14px 14px}
+  .row{grid-template-columns:1fr;gap:10px}
+  .badge{padding:20px 14px}
+  .badge .ic{font-size:34px}
+  .badge .en{font-size:21px;letter-spacing:2px}
+  .badge .ko{font-size:13px}
+  .badge .sb{font-size:10.5px}
+  table{font-size:12px;display:block}
+  tbody,tr{display:block;width:100%}
+  th,td{display:block;width:100%}
+  th{padding:6px 10px;font-size:11px;letter-spacing:.3px}
+  td{padding:9px 10px;border-top:none}
+  tr{margin-bottom:6px}
+  .nt{padding:12px 14px;font-size:10.5px}
+}
 </style></head><body>
 <div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
   <div>GNI Solution Co., Ltd.
