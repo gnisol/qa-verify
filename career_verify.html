@@ -33,12 +33,19 @@ th{background:var(--dark);color:#fff;padding:8px 10px;text-align:left;font-weigh
 td{border:1px solid var(--line);padding:8px 10px;word-break:break-word}
 .nt{font-size:11px;color:var(--meta);line-height:1.6;padding:14px 20px;background:#fff;border:1px solid var(--line)}
 .nt b{color:var(--coral-d)}
+.nt p{margin:0}
+.nt p+p{margin-top:5px}
+/* 헤더 부제 — 한글구/영문구를 각각 통째로 줄바꿈 (단어 중간에서 끊기지 않게) */
+.hd .nb{display:inline-block;white-space:nowrap}
+.hd small{word-break:keep-all}
 .ft{font-size:10.5px;color:var(--meta);margin-top:18px;text-align:center;line-height:1.6}
 /* ── 모바일 (QR은 대부분 폰으로 스캔) ── */
 @media(max-width:560px){
-  .hd{padding:11px 14px;gap:10px;font-size:13.5px}
-  .hd img{height:34px}
-  .hd small{font-size:10.5px;margin-top:2px}
+  .hd{padding:11px 14px;gap:10px;font-size:13.5px;align-items:flex-start}
+  .hd img{height:34px;margin-top:1px}
+  .hd small{font-size:10px;margin-top:3px;line-height:1.5}
+  .hd .dot{display:none}                    /* 좁은 화면에서는 가운뎃점 대신 줄바꿈 */
+  .hd .nb{display:block;white-space:normal}  /* 한글구·영문구 각각 한 줄 */
   .wrap{padding:14px 12px 40px}
   .cb{padding:14px 14px}
   .row{grid-template-columns:1fr;gap:10px}
@@ -58,7 +65,8 @@ td{border:1px solid var(--line);padding:8px 10px;word-break:break-word}
 </style></head><body>
 <div class="hd"><img src="gni_logo.png" alt="GNI Solution" onerror="this.style.display='none'">
   <div>GNI Solution Co., Ltd.
-  <small>경력증명서 진위확인 · Career Certificate Verification — QA Department</small></div></div>
+  <small><span class="nb">경력증명서 진위확인</span> <span class="dot">·</span>
+  <span class="nb">Career Certificate Verification — QA Department</span></small></div></div>
 <div class="wrap">
  <div class="card"><div class="sec">발급번호 조회 · Certificate No.</div><div class="cb">
   <div class="row">
@@ -70,9 +78,9 @@ td{border:1px solid var(--line);padding:8px 10px;word-break:break-word}
  </div></div>
  <div id="out"></div>
  <div class="nt">
-  · 본 페이지는 지엔아이솔루션㈜ 품질보증부가 발급한 <b>경력증명서의 발급 사실</b>을 확인합니다.<br>
-  · 개인정보 보호를 위해 <b>성명은 일부 마스킹</b>되며, 경력 상세·제출처는 공개하지 않습니다.<br>
-  · 증명서 원본 대조가 필요한 경우 품질보증부로 문의하십시오.
+  <p>· 본 페이지는 지엔아이솔루션㈜ 품질보증부가 발급한 <b>경력증명서의 발급 사실</b>을 확인합니다.</p>
+  <p>· 개인정보 보호를 위해 <b>성명은 일부 마스킹</b>되며, 경력 상세·제출처는 공개하지 않습니다.</p>
+  <p>· 증명서 원본 대조가 필요한 경우 품질보증부로 문의하십시오.</p>
  </div>
  <div class="ft">GNI Solution Co., Ltd. · 품질보증부<br>Form GA-3 Career Certificate Verification</div>
 </div>
