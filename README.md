@@ -46,12 +46,15 @@ GNI Solution Co., Ltd. (Global Nondestructive Examination & Inspection Solution 
 
 ### 조회코드는 저장되지 않습니다
 
-공개 파일에는 조회코드 원본이 아니라 `SHA-256(발급번호:조회코드)` 의 앞 32자만 들어갑니다.
-파일을 통째로 받아도 조회코드를 알아낼 수 없습니다 (8자리 · 약 1.1조 가지).
+공개 파일에는 조회코드 원본이 아니라 `SHA-256(발급번호:조회코드)` 를 **5만 회 반복**한 값의 앞 32자만 들어갑니다.
+
+조회코드는 8자리(약 1.1조 가지)입니다. 단일 해시라면 고성능 GPU 로 수 분 내 전수 대입이 가능하지만,
+5만 회 반복으로 계산 비용을 5만 배로 올려 같은 장비로 두 달 이상이 걸리도록 했습니다.
+정상 조회 시의 추가 대기는 0.3~1.3초 수준입니다.
 
 발급번호는 연번이므로 번호만으로는 타인의 기록을 열람할 수 없도록 조회코드 일치를 함께 요구합니다.
 
-The public file stores only the first 32 characters of `SHA-256(certificate-no:code)` — never the code itself.
+The public file stores only the first 32 characters of `SHA-256(certificate-no:code)` iterated 50,000 times — never the code itself.
 
 ---
 
