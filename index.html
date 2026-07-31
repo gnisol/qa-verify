@@ -70,9 +70,9 @@ function setLang(L){
   document.getElementById('bEN').className=(L==='en')?'on':'';
 }
 (function(){
-  var L=null;
-  try{ L=localStorage.getItem(LSKEY); }catch(e){}
-  if(!L){ var p=new URLSearchParams(location.search).get('lang'); if(p) L=p.toLowerCase(); }
+  var L=new URLSearchParams(location.search).get('lang');
+  L=L?L.toLowerCase():null;
+  if(!L){ try{ L=localStorage.getItem(LSKEY); }catch(e){} }
   if(!L) L=((navigator.language||'').toLowerCase().indexOf('ko')===0)?'kr':'en';
   setLang(L);
 })();

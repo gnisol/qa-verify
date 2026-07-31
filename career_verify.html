@@ -213,10 +213,11 @@ function setLang(L){
     ? (DBOK ? s.loaded(Object.keys(DB).length) : s.loadFail) : s.loading;
   if(SHOWN) go();
 }
+/* 우선순위 : URL ?lang= (명시 지정) → 이전 선택 → 브라우저 언어 */
 function initLang(){
-  var L=null;
-  try{ L=localStorage.getItem(LSKEY); }catch(e){}
-  if(!L){ var p=new URLSearchParams(location.search).get('lang'); if(p) L=p.toLowerCase(); }
+  var L=new URLSearchParams(location.search).get('lang');
+  L=L?L.toLowerCase():null;
+  if(!L){ try{ L=localStorage.getItem(LSKEY); }catch(e){} }
   if(!L) L=((navigator.language||'').toLowerCase().indexOf('ko')===0)?'kr':'en';
   setLang(L);
 }
