@@ -40,9 +40,18 @@ GNI Solution Co., Ltd. (Global Nondestructive Examination & Inspection Solution 
 
 이 저장소의 `gni_career_db.json` 은 누구나 내려받을 수 있습니다. 그래서 아래만 담습니다.
 
-**포함** — 발급번호 · 발급일 · 증명서 유형 · **마스킹 성명**(예: `Hong, G** D***`) · 총 경력일수 · 경력 기재건수 · 발급 기록시각
+**포함** — 발급번호 · 발급일 · 증명서 유형 · 총 경력일수 · 경력 기재건수 · 발급 기록시각
 
-**미포함** — 주민등록번호 · 성명 전체 · 경력 상세(프로젝트·검사방법·부서) · 제출처 · 주소 · 연락처
+**미포함** — 주민등록번호 · 성명 · 경력 상세(프로젝트·검사방법·부서) · 제출처 · 주소 · 연락처
+
+### 성명은 암호화되어 있습니다
+
+성명은 공개 파일에 평문으로도, 마스킹된 형태로도 들어 있지 않습니다.
+조회코드로 암호화되어 있어 **코드를 아는 사람만** 복호화할 수 있고, 화면에는 그마저도 마스킹해서 표시합니다.
+파일만 받은 제3자에게는 의미 없는 16진 문자열입니다.
+
+The name is encrypted with the verification code — it is not stored in plaintext or masked form.
+Only a holder of the code can decrypt it, and even then it is displayed masked.
 
 ### 조회코드는 저장되지 않습니다
 
