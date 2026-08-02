@@ -245,6 +245,33 @@ function tokenHash(no,tok){
   for(var i=0;i<HASH_ROUNDS;i++) h=sha256hex(h);
   return h.slice(0,32);
 }
+/* 성명 복호화 (v3) — 조회코드가 맞을 때만 의미 있는 값이 나온다.
+   생성기의 encName 과 같은 키스트림을 만든다. */
+function nameKeyStream(no,tok,len){
+  var seed=String(no)+':'+String(tok).toUpperCase()+':name', out=[], i=0;
+  while(out.length<len){
+    var h=sha256hex(seed+':'+i);
+    for(var j=0;j<h.length && out.length<len;j+=2) out.push(parseInt(h.substr(j,2),16));
+    i++;
+  }
+  return out;
+}
+function decName(hex,no,tok){
+  if(!hex) return '';
+  try{
+    var n=hex.length/2, ks=nameKeyStream(no,tok,n), s='';
+    for(var i=0;i<n;i++)
+      s+=String.fromCharCode((parseInt(hex.substr(i*2,2),16)^ks[i])&255);
+    return decodeURIComponent(escape(s));
+  }catch(e){ return ''; }
+}
+/* 화면에는 마스킹해서 보여준다 — 복호화에 성공해도 전체 성명을 노출하지 않는다 */
+function maskName(s){
+  s=String(s||'').trim(); if(!s) return '';
+  var i=s.indexOf(','), head=i>=0?s.slice(0,i+1):'', rest=(i>=0?s.slice(i+1):s).trim();
+  var m=rest.split(/s+/).map(function(t){ return t?t[0]+'***':''; }).join(' ');
+  return (head?head+' ':'')+m;
+}
 function go(){
   var s=TT();
   var k=document.getElementById('q').value.trim();
@@ -278,7 +305,7 @@ function finish(s,k,t,r,o){
    +'<tr><th>'+s.thNo+'</th><td>'+esc(r.no)+'</td></tr>'
    +'<tr><th>'+s.thDate+'</th><td>'+esc(r.date)+'</td></tr>'
    +'<tr><th>'+s.thType+'</th><td>'+esc(r.type)+s.typeSuffix+'</td></tr>'
-   +'<tr><th>'+s.thName+'</th><td>'+esc(r.name)
+   +'<tr><th>'+s.thName+'</th><td>'+esc(maskName(decName(r.ne,k,t)||r.name))
      +' <span style="color:var(--meta);font-size:11px">'+s.maskNote+'</span></td></tr>'
    +'<tr><th>'+s.thTotal+'</th><td>'
      +(r.totalDays==null?'&mdash;':Number(r.totalDays).toLocaleString('en-US')+s.unitDays)+'</td></tr>'
