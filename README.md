@@ -1,77 +1,98 @@
-# GNI Solution — 증명서 진위확인
-### Certificate Verification — GNI Solution Co., Ltd. (QA Department)
+<div align="center">
 
-지엔아이솔루션(주) 품질보증부가 발급한 증명서의 **발급 사실**을 확인하는 공개 페이지입니다.
+<img src="gni_logo.png" alt="GNI Solution" width="140">
 
-This site confirms **the fact of issuance** of certificates issued by the QA Department of
-GNI Solution Co., Ltd. (Global Nondestructive Examination & Inspection Solution Co., Ltd.)
+# 증명서 진위확인 · Certificate Verification
+
+**지엔아이솔루션(주) 품질보증부**가 발급한 증명서의 **발급 사실**을 확인하는 공개 페이지입니다.<br>
+Public verification service for certificates issued by **GNI Solution Co., Ltd. — Quality Assurance Dept.**
+
+[![진위확인 바로가기](https://img.shields.io/badge/진위확인-바로가기-D97757?style=for-the-badge)](https://gnisol.github.io/qa-verify/)
+[![GitHub Pages](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-1E2630?style=for-the-badge&logo=github)](https://gnisol.github.io/qa-verify/)
+
+</div>
 
 ---
 
 ## 확인 방법 · How to verify
 
-**1. QR 스캔** — 증명서 좌측 하단의 QR 코드를 스마트폰으로 촬영하면 결과가 바로 표시됩니다.
+증명서를 받으신 발주처·기관에서는 아래 두 가지 방법 중 하나로 확인하실 수 있습니다.
 
-**2. 직접 입력** — QR을 쓸 수 없으면 아래 주소에서 증명서에 인쇄된 두 값을 입력하십시오.
-
-| 입력값 | 증명서상 위치 |
-|--------|--------------|
-| 발급번호 (Certificate No.) | 좌측 상단 `Issued No.` 또는 QR 아래 `No.` |
-| 조회코드 (Code) | QR 아래 `Code` — 8자리, 대소문자 무관 |
-
-- 포털 · Portal : https://gnisol.github.io/qa-verify/
-- 경력증명서 · Career Certificate : https://gnisol.github.io/qa-verify/career_verify.html
-
-화면 우측 상단에서 **KR / EN** 을 전환할 수 있습니다.
-
----
-
-## 판정 결과 · Results
-
-| 표시 | 의미 |
+| 방법 | 절차 |
 |------|------|
-| **VERIFIED** | 발급 기록과 일치합니다 · Matches our issuance record |
-| **CODE MISMATCH** | 조회코드가 일치하지 않습니다 · The code does not match |
-| **NOT FOUND** | 해당 발급번호의 기록이 없습니다 · No record for that number |
+| **① QR 스캔** | 증명서에 인쇄된 QR 코드를 휴대폰 카메라로 스캔 → 결과 즉시 표시 |
+| **② 직접 입력** | 아래 조회 페이지 접속 → 증명서에 기재된 **발급번호(Certificate No.)** 와 **조회코드(Code, 8자리)** 입력 |
+
+> Scan the QR code printed on the certificate, or enter the **Certificate No.** and the 8-digit **Code** on the verification page below.
+
+### 조회 주소 · Verification URLs
+
+| 대상 | 주소 |
+|------|------|
+| 진위확인 포털 · Portal | <https://gnisol.github.io/qa-verify/> |
+| 경력증명서 · Certificate of Career | <https://gnisol.github.io/qa-verify/career_verify.html> |
+
+한국어 / English 표시를 지원합니다. · Available in Korean and English.
+
+### 조회 결과 · Result
+
+조회 결과에는 **발급 여부 · 발급일 · 증명서 유형 · 마스킹 성명 · 총 경력일수 · 경력 기재건수**가 표시됩니다.
+
+| 결과 | 의미 |
+|------|------|
+| **VERIFIED** | 당사가 발급한 증명서가 맞습니다. |
+| **CODE MISMATCH** | 발급번호는 존재하나 조회코드가 일치하지 않습니다. 입력값을 확인해 주십시오. |
+| **NOT FOUND** | 해당 발급번호의 기록이 없습니다. |
+
+`CODE MISMATCH` 또는 `NOT FOUND`가 반복되거나 조회 결과가 증명서 내용과 다를 경우,
+해당 증명서는 당사가 발급한 것이 아닐 수 있으므로 **품질보증부로 문의**하여 주시기 바랍니다.
 
 ---
 
-## 공개되는 정보 · What is disclosed
+## 개인정보 보호 · Privacy
 
-이 저장소의 `gni_career_db.json` 은 누구나 내려받을 수 있습니다. 그래서 아래만 담습니다.
+본 서비스는 진위확인에 **필요한 최소한의 정보만** 공개하도록 설계되었습니다.
 
-**포함** — 발급번호 · 발급일 · 증명서 유형 · 총 경력일수 · 경력 기재건수 · 발급 기록시각
+**공개 항목**
 
-**미포함** — 주민등록번호 · 성명 · 경력 상세(프로젝트·검사방법·부서) · 제출처 · 주소 · 연락처
+- 발급번호 · 발급일 · 증명서 유형
+- **마스킹된 성명** (예: `Kim, K***`)
+- 총 경력일수 · 경력 기재건수
 
-### 성명은 암호화되어 있습니다
+**비공개 항목**
 
-성명은 공개 파일에 평문으로도, 마스킹된 형태로도 들어 있지 않습니다.
-조회코드로 암호화되어 있어 **코드를 아는 사람만** 복호화할 수 있고, 화면에는 그마저도 마스킹해서 표시합니다.
-파일만 받은 제3자에게는 의미 없는 16진 문자열입니다.
+- 주민등록번호 · 생년월일
+- 성명 전체
+- 프로젝트 상세내역 · 발주처 · 근무지
+- 주소 · 연락처 · 제출처
 
-The name is encrypted with the verification code — it is not stored in plaintext or masked form.
-Only a holder of the code can decrypt it, and even then it is displayed masked.
+**무단 조회 방지**
 
-### 조회코드는 저장되지 않습니다
-
-공개 파일에는 조회코드 원본이 아니라 `SHA-256(발급번호:조회코드)` 를 **5만 회 반복**한 값의 앞 32자만 들어갑니다.
-
-조회코드는 8자리(약 1.1조 가지)입니다. 단일 해시라면 고성능 GPU 로 수 분 내 전수 대입이 가능하지만,
-5만 회 반복으로 계산 비용을 5만 배로 올려 같은 장비로 두 달 이상이 걸리도록 했습니다.
-정상 조회 시의 추가 대기는 0.3~1.3초 수준입니다.
-
-발급번호는 연번이므로 번호만으로는 타인의 기록을 열람할 수 없도록 조회코드 일치를 함께 요구합니다.
-
-The public file stores only the first 32 characters of `SHA-256(certificate-no:code)` iterated 50,000 times — never the code itself.
+- 발급번호만으로는 조회할 수 없으며, 증명서에만 기재된 **8자리 조회코드**가 일치해야 합니다.
+- 공개 데이터에는 조회코드 원본 대신 **단방향 해시(SHA-256, 반복 적용)** 값만 저장되어 있어, 공개 파일로부터 코드를 역산할 수 없습니다.
+- 성명은 조회코드로 **암호화**되어 저장되며, 코드를 모르면 복호화되지 않습니다. 복호화에 성공하더라도 화면에는 마스킹된 형태로만 표시됩니다.
+- 전체 발급내역은 사내에서만 관리하며 외부에 공개하지 않습니다.
 
 ---
 
-## 문의 · Contact
+## 저장소 구성 · Repository contents
 
-증명서 원본 대조나 발급 관련 문의는 **지엔아이솔루션(주) 품질보증부** 로 연락하십시오.
-For verification against the original document, please contact the QA Department.
+| 파일 | 설명 |
+|------|------|
+| `index.html` | 진위확인 포털 (증명서 유형 선택) |
+| `career_verify.html` | 경력증명서 조회 페이지 (KO / EN) |
+| `gni_career_db.json` | 발급기록 (공개용 · 최소 항목만 포함) |
+| `gni_logo.png` | 회사 로고 |
+
+정적 파일만으로 구성되어 있으며 서버·데이터베이스를 사용하지 않습니다.<br>
+Fully static site — no server-side code, no database.
 
 ---
 
-GNI Solution Co., Ltd. · 품질보증부 · Form GA-3
+<div align="center">
+
+**지엔아이솔루션(주)** · 품질보증부<br>
+GNI Solution Co., Ltd. — Quality Assurance Dept.<br>
+Tel. 070-7575-2463
+
+</div>
