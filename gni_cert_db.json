@@ -1,5 +1,5 @@
 {
-  "gen": "2026-08-04 13:45",
+  "gen": "2026-08-04 13:49",
   "records": {
     "2026-0801": {
       "no": "2026-0801",
@@ -13,7 +13,7 @@
       "st": "VALID",
       "rd": "",
       "wp": "QSU402E Rev.12",
-      "std": "SNT-TC-1A 2020, SNT-TC-1A 2024, SNT-TC-1A 2016",
+      "std": "SNT-TC-1A 2024",
       "emp": "GNI Solution Co., Ltd.",
       "ca": "K.T. LEE / ASNT L-III 185544",
       "vis": "2027-02-28",
@@ -37,8 +37,7 @@
           "lv": "Level II",
           "c": "GNI SOL.-LII-260401",
           "t": [
-            "Yoke",
-            "Coil"
+            "Yoke"
           ],
           "e": "2031-08-03"
         }
