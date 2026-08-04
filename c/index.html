@@ -106,6 +106,7 @@
   <div id="result" class="card hide">
     <div class="kv">
       <div class="k" data-i="kIssueNo">발급번호</div><div class="v mono" id="rNo">—</div>
+      <div class="k hide" id="kFp" data-i="kFp">문서 지문 (DOC)</div><div class="v mono hide" id="rFp">—</div>
       <div class="k" data-i="kType">문서종류</div><div class="v" id="rType">—</div>
       <div class="k" data-i="kName">성명</div><div class="v" id="rName">—</div>
       <div class="k" data-i="kDate">발급일</div><div class="v mono" id="rDate">—</div>
@@ -193,6 +194,24 @@ function sha256hex(msg){
 }
 
 /* ⚠ 라운드 수 — 앱(verifyCore.js)과 반드시 같아야 한다 */
+/* 내용 지문 — 앱의 verifyCore.js contentFingerprint() 와 **한 글자도 다르면 안 된다.**
+   목적: 유효한 QR 이 박힌 진짜 문서를 복제해 종이 내용(방법·레벨·만료일)만 고친 위조를 잡는다.
+   표시·대조 전용이며 tokenHash 조회 로직과 무관하다 — 값이 달라도 조회 자체는 정상 동작한다. */
+function contentFingerprint(rec){
+  var ms = (rec.methods || []).map(function(x){
+    return [x.m, x.lv, x.c, x.e].map(function(v){ return String(v == null ? '' : v); }).join(':');
+  }).sort().join('|');
+  var seed = [
+    String(rec.no == null ? '' : rec.no),
+    String(rec.date == null ? '' : rec.date),
+    String(rec.level == null ? '' : rec.level),
+    String(rec.expiry == null ? '' : rec.expiry),
+    String(rec.st == null ? 'VALID' : rec.st),
+    ms
+  ].join('~');
+  return sha256hex(seed).slice(0,6).toUpperCase();
+}
+
 var HASH_ROUNDS = 50000;                       /* 현행 스키마(v2) 기준값 */
 var HASH_ROUNDS_BY_VERSION = { 2: 50000 };     /* 레코드의 v 값으로 조회 */
 
@@ -233,7 +252,7 @@ function maskName(s){
    ============================================================ */
 var T = {
   ko:{
-    brandSub:'사내자격 진위확인', kIssueNo:'발급번호', kType:'문서종류', kName:'성명',
+    brandSub:'사내자격 진위확인', kIssueNo:'발급번호', kFp:'문서 지문 (DOC)', kType:'문서종류', kName:'성명',
     kDate:'발급일', kExpiry:'만료일', kWp:'Written Practice', kStd:'적용표준',
     kEmp:'고용주', kCa:'인증책임자', kVis:'시력검사 유효', genLabel:'데이터 기준',
     hMethods:'자격 내역', hManual:'직접 조회', lNo:'발급번호 (증명서 좌측 상단)',
@@ -252,7 +271,7 @@ var T = {
     valid:'유효', expired:'만료'
   },
   en:{
-    brandSub:'CERTIFICATE VERIFICATION', kIssueNo:'Issue No.', kType:'Document', kName:'Name',
+    brandSub:'CERTIFICATE VERIFICATION', kIssueNo:'Issue No.', kFp:'Document Fingerprint (DOC)', kType:'Document', kName:'Name',
     kDate:'Date of Issue', kExpiry:'Expiry', kWp:'Written Practice', kStd:'Standard',
     kEmp:'Employer', kCa:'Certifying Authority', kVis:'Vision Exam Valid', genLabel:'Data as of',
     hMethods:'CERTIFICATIONS', hManual:'MANUAL LOOKUP', lNo:'Issue No. (top-left of certificate)',
@@ -324,6 +343,9 @@ function renderRecord(rec, name, gen){
   $('rName').textContent = name || '—';
   $('rDate').textContent = rec.date || '—';
   $('rExpiry').textContent = rec.expiry || '—';
+  /* 문서 지문 — 레코드 값을 그대로 쓰지 않고 **여기서 다시 계산**한다.
+     그래야 공개 JSON 의 fp 자체가 손상된 경우도 드러난다. 종이의 DOC 값과 다르면 위조다. */
+  pair('kFp','rFp', contentFingerprint(rec));
   pair('kWp','rWp',rec.wp); pair('kStd','rStd',rec.std);
   pair('kEmp','rEmp',rec.emp); pair('kCa','rCa',rec.ca);
   pair('kVis','rVis',rec.vis);
