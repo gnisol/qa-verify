@@ -1,5 +1,5 @@
 {
-  "gen": "2026-08-04 13:05",
+  "gen": "2026-08-04 13:45",
   "records": {
     "2026-0801": {
       "no": "2026-0801",
@@ -9,11 +9,11 @@
       "date": "2026-08-04",
       "type": "Cert",
       "level": "Level II",
-      "expiry": "2031-08-03",
+      "expiry": "2031-04-29",
       "st": "VALID",
       "rd": "",
       "wp": "QSU402E Rev.12",
-      "std": "SNT-TC-1A 2024",
+      "std": "SNT-TC-1A 2020, SNT-TC-1A 2024, SNT-TC-1A 2016",
       "emp": "GNI Solution Co., Ltd.",
       "ca": "K.T. LEE / ASNT L-III 185544",
       "vis": "2027-02-28",
@@ -22,8 +22,23 @@
           "m": "MT",
           "lv": "Level II",
           "c": "GNI SOL.-LII-260401",
+          "t": [],
+          "e": "2031-04-29"
+        },
+        {
+          "m": "PT",
+          "lv": "Level II",
+          "c": "GNI SOL.-LII-260401",
+          "t": [],
+          "e": "2031-04-29"
+        },
+        {
+          "m": "MT",
+          "lv": "Level II",
+          "c": "GNI SOL.-LII-260401",
           "t": [
-            "Yoke"
+            "Yoke",
+            "Coil"
           ],
           "e": "2031-08-03"
         }
